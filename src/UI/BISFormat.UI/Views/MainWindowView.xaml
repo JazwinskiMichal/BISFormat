@@ -1,0 +1,90 @@
+﻿<Window x:Class="BISFormat.UI.Views.MainWindowView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:uc="clr-namespace:BISFormat.UI.Controls;assembly=BISFormat.UI.Controls"
+        xmlns:styles="clr-namespace:BISFormat.UI.Styles.Themes;assembly=BISFormat.UI.Styles"
+        xmlns:conv="clr-namespace:BISFormat.UI.Styles.Converters;assembly=BISFormat.UI.Styles"
+        xmlns:local="clr-namespace:BISFormat.UI.Views"
+        xmlns:vm="clr-namespace:BISFormat.UI.ViewModels"
+        d:DataContext="{d:DesignInstance Type=vm:MainWindowVM}"
+        mc:Ignorable="d"
+        Title="BIS Format" Height="450" Width="800"
+        MinHeight="475" MinWidth="425">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <!-- Input data -->
+        <GroupBox Header="Dane wejściowe" Margin="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="textLabelColumn" Width="200"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Podaj tekst do sprawdzenia" 
+                       VerticalAlignment="Center"/>
+                <TextBox Grid.Column="1" Margin="10"
+                         VerticalContentAlignment="Center"
+                         Background="{x:Static styles:Brushes.DimmedWhite}"
+                         TextWrapping="Wrap"
+                         Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Grid.Row="1" 
+                       Content="Podaj warunek" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="1" Grid.Column="1" 
+                         Margin="10"
+                         VerticalContentAlignment="Center"
+                         Background="{x:Static styles:Brushes.DimmedWhite}"
+                         TextWrapping="Wrap"
+                         Text="{Binding Condition, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </GroupBox>
+        
+        <!-- Conditions -->
+        <GroupBox Header="Warunki"
+                  Margin="10"
+                  Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Rodzaj testu" 
+                       VerticalAlignment="Center"/>
+                <ComboBox Grid.Column="1"
+                          Margin="10"/>
+
+                <Label Content="Sprawdzaj Wielkie Litery"
+                       Grid.Row="1"
+                       VerticalAlignment="Center"/>
+                <CheckBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
+                          Margin="10"
+                          IsChecked="{Binding CheckCaseSensitive}"/>
+            </Grid>
+        </GroupBox>
+        
+        <!-- Results -->
+        <GroupBox Header="Wynik"
+                  Margin="10"
+                  Grid.Row="2">
+            <uc:PopIndicator Width="100" Height="100"
+                             ShowPop="{Binding CheckResult}"
+                             ShowShake="{Binding CheckResult,Converter={conv:BooleanToInverseBooleanConverter}}"/>
+        </GroupBox>
+    </Grid>
+</Window>

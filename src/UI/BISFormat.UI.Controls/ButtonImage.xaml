@@ -1,0 +1,132 @@
+﻿<UserControl x:Class="BISFormat.UI.Controls.ButtonImage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BISFormat.UI.Controls"
+             xmlns:conv="clr-namespace:BISFormat.UI.Styles.Converters;assembly=BISFormat.UI.Styles"
+             xmlns:styles="clr-namespace:BISFormat.UI.Styles.Themes;assembly=BISFormat.UI.Styles"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    
+    <Button Background="{Binding ButtonBackground, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}"
+            BorderBrush="{Binding ButtonBorderBrush, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}"
+            Foreground="{Binding ButtonForeground, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}"
+            FontFamily="{Binding ButtonFontFamily, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}"
+            FontSize="{Binding ButtonFontSize, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}"
+            BorderThickness="1"
+            VerticalContentAlignment="Center"
+            HorizontalContentAlignment="Center"
+            FocusVisualStyle="{x:Null}"
+            Content="{Binding ButtonText, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}"
+            Command="{Binding ClickCommand, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}"
+            CommandParameter="{Binding ClickCommandParam, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}">
+        <Button.Style>
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="Content" Value="ButtonWithLoader"/>
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="Background" Value="{Binding ButtonBackground, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}" />
+                <Setter Property="BorderBrush" Value="{Binding ButtonBorderBrush, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}" />
+                <Setter Property="Foreground" Value="{Binding ButtonForeground, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}" />
+                <Setter Property="FontFamily" Value="{Binding ButtonFontFamily, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}" />
+                <Setter Property="FontSize" Value="{Binding ButtonFontSize, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}" />
+                <Setter Property="Content" Value="{Binding ButtonText, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border
+                                Name="ItemBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{Binding ButtonCornerRadius, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}"
+                                Effect="{x:Static styles:Shadows.ShadowDown1}"
+                                SnapsToDevicePixels="True">
+
+                                <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border x:Name="ItemBorder1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock x:Name="ContentText"
+                                                   Padding="{TemplateBinding Padding}"
+                                                   FontSize="{TemplateBinding FontSize}"
+                                                   Foreground="{TemplateBinding Foreground}"
+                                                   FontFamily="{TemplateBinding FontFamily}"
+                                                   Text="{TemplateBinding Content}"
+                                                   Margin="4,2,2,2"/>
+                                    </Border>
+
+                                    <Image Grid.Column="1" VerticalAlignment="Center" Margin="{Binding ButtonIconMargin, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}" x:Name="icon">
+                                        <Image.Source>
+                                            <MultiBinding Converter="{conv:PathColorToImageMultiConverter}">
+                                                <Binding RelativeSource="{RelativeSource AncestorType={x:Type local:ButtonImage}}" Path="ButtonIcon"/>
+                                                <Binding RelativeSource="{RelativeSource AncestorType={x:Type local:ButtonImage}}" Path="ButtonIconColor"/>
+                                            </MultiBinding>
+                                        </Image.Source>
+                                    </Image>
+                                </Grid>
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+                                <!-- Order of Triggers is IMPORTANT -->
+
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="ItemBorder" Property="Border.Background" Value="{x:Static styles:Brushes.SuperLightGray}" />
+                                    <Setter TargetName="ItemBorder" Property="Border.BorderBrush" Value="{x:Static styles:Brushes.LightGray}" />
+                                    <Setter TargetName="ContentText" Property="Foreground" Value="{x:Static styles:Brushes.Gray}" />
+                                    <Setter TargetName="ItemBorder" Property="Effect" Value="{x:Static styles:Shadows.ShadowDown2}" />
+                                    <Setter TargetName="icon" Property="Source">
+                                        <Setter.Value>
+                                            <Binding Path="ButtonIcon" RelativeSource="{RelativeSource AncestorType={x:Type local:ButtonImage}}">
+                                                <Binding.Converter>
+                                                    <conv:PathToImageConverter IconIfNull="{x:Static styles:Icons.ExclaminationTriangle}" Color="{x:Static styles:Brushes.Gray}"/>
+                                                </Binding.Converter>
+                                            </Binding>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="ItemBorder" Property="Border.Background" Value="{Binding ButtonBackgroundFocused, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}" />
+                                    <Setter TargetName="ItemBorder" Property="Border.BorderBrush" Value="{Binding ButtonBorderBrushFocused, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}" />
+                                    <Setter TargetName="ContentText" Property="Foreground" Value="{Binding ButtonForegroundFocused, RelativeSource={RelativeSource AncestorType={x:Type local:ButtonImage}}}" />
+                                    <Setter TargetName="ItemBorder" Property="Effect" Value="{x:Static styles:Shadows.ShadowDown2}" />
+                                    <Setter TargetName="icon" Property="Source">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{conv:PathColorToImageMultiConverter}">
+                                                <Binding RelativeSource="{RelativeSource AncestorType={x:Type local:ButtonImage}}" Path="ButtonIcon"/>
+                                                <Binding RelativeSource="{RelativeSource AncestorType={x:Type local:ButtonImage}}" Path="ButtonIconColorFocused"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard AutoReverse="True">
+                                                <DoubleAnimation Storyboard.TargetName="ItemBorder"
+                                                                Storyboard.TargetProperty="Opacity"
+                                                                To="0.5" Duration="0:0:0.1" >
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <SineEase EasingMode="EaseInOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Button.Style>
+    </Button>
+</UserControl>
