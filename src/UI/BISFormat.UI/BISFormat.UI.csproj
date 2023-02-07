@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
+    <PackageReference Include="Nuctech.Xaml.Behaviors.Wpf" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Interfaces\BISFormat.Interfaces\BISFormat.Interfaces.csproj" />
     <ProjectReference Include="..\BISFormat.UI.Controls\BISFormat.UI.Controls.csproj" />
   </ItemGroup>

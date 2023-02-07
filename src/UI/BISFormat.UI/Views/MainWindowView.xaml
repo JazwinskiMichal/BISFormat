@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:uc="clr-namespace:BISFormat.UI.Controls;assembly=BISFormat.UI.Controls"
         xmlns:styles="clr-namespace:BISFormat.UI.Styles.Themes;assembly=BISFormat.UI.Styles"
-        xmlns:conv="clr-namespace:BISFormat.UI.Styles.Converters;assembly=BISFormat.UI.Styles"
-        xmlns:local="clr-namespace:BISFormat.UI.Views"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:vm="clr-namespace:BISFormat.UI.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:MainWindowVM}"
         mc:Ignorable="d"
         Title="BIS Format" Height="450" Width="800"
         MinHeight="475" MinWidth="425">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -31,22 +31,46 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Label Content="Podaj tekst do sprawdzenia" 
+                <Label Content="Tekst" 
                        VerticalAlignment="Center"/>
                 <TextBox Grid.Column="1" Margin="10"
                          VerticalContentAlignment="Center"
                          Background="{x:Static styles:Brushes.DimmedWhite}"
                          TextWrapping="Wrap"
-                         Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                         Text="{Binding Text,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="LostFocus">
+                            <i:InvokeCommandAction Command="{Binding CheckResultCommand}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="TextChanged">
+                            <i:InvokeCommandAction Command="{Binding CheckResultCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding CheckResultCommand}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
 
                 <Label Grid.Row="1" 
-                       Content="Podaj warunek" VerticalAlignment="Center"/>
+                       Content="Wartość" VerticalAlignment="Center"/>
                 <TextBox Grid.Row="1" Grid.Column="1" 
                          Margin="10"
                          VerticalContentAlignment="Center"
                          Background="{x:Static styles:Brushes.DimmedWhite}"
                          TextWrapping="Wrap"
-                         Text="{Binding Condition, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                         Text="{Binding Condition,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="LostFocus">
+                            <i:InvokeCommandAction Command="{Binding CheckResultCommand}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="TextChanged">
+                            <i:InvokeCommandAction Command="{Binding CheckResultCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{Binding CheckResultCommand}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
             </Grid>
         </GroupBox>
         
@@ -64,27 +88,82 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Label Content="Rodzaj testu" 
+                <Label Content="Warunek" 
                        VerticalAlignment="Center"/>
                 <ComboBox Grid.Column="1"
-                          Margin="10"/>
+                          Margin="10"
+                          VerticalContentAlignment="Center"
+                          ItemsSource="{Binding StringTests}"
+                          SelectedValue="{Binding SelectedStringTest, Mode=TwoWay}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding CheckResultCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
 
                 <Label Content="Sprawdzaj Wielkie Litery"
                        Grid.Row="1"
                        VerticalAlignment="Center"/>
                 <CheckBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
                           Margin="10"
-                          IsChecked="{Binding CheckCaseSensitive}"/>
+                          IsChecked="{Binding CheckCaseSensitive}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:InvokeCommandAction Command="{Binding CheckResultCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </CheckBox>
             </Grid>
         </GroupBox>
         
-        <!-- Results -->
+        <!-- Result -->
         <GroupBox Header="Wynik"
                   Margin="10"
                   Grid.Row="2">
-            <uc:PopIndicator Width="100" Height="100"
-                             ShowPop="{Binding CheckResult}"
-                             ShowShake="{Binding CheckResult,Converter={conv:BooleanToInverseBooleanConverter}}"/>
+            <uc:PopIndicator Width="100" Height="100">
+                <uc:PopIndicator.Style>
+                    <Style TargetType="{x:Type uc:PopIndicator}">
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding ShowResultIndicator}" Value="False"/>
+                                    <Condition Binding="{Binding CheckResult}" Value="False"/>
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                </MultiDataTrigger.Setters>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding ShowResultIndicator}" Value="True"/>
+                                    <Condition Binding="{Binding CheckResult}" Value="False"/>
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="ImagePathGeometry" Value="{x:Static styles:Icons.NOKCircle}"/>
+                                    <Setter Property="Color" Value="{x:Static styles:Brushes.Red}"/>
+                                    <Setter Property="ShowShake" Value="True"/>
+                                    <Setter Property="ShowPop" Value="False"/>
+                                </MultiDataTrigger.Setters>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding ShowResultIndicator}" Value="True"/>
+                                    <Condition Binding="{Binding CheckResult}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="ImagePathGeometry" Value="{x:Static styles:Icons.CheckCircle}"/>
+                                    <Setter Property="Color" Value="{x:Static styles:Brushes.Green}"/>
+                                    <Setter Property="ShowShake" Value="False"/>
+                                    <Setter Property="ShowPop" Value="True"/>
+                                </MultiDataTrigger.Setters>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </uc:PopIndicator.Style>
+            </uc:PopIndicator>
         </GroupBox>
     </Grid>
 </Window>
